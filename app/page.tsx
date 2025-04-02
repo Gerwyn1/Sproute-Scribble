@@ -1,28 +1,13 @@
-import createPost from "@/server/actions/create-posts";
-import getPosts from "@/server/actions/get-posts";
+import { Button } from "@/components/ui/button";
+import { signIn, signUp } from "@/lib/auth-client";
 
 export default async function Home() {
-  const { error, success } = await getPosts();
-  if (error) {
-    throw new Error(error);
-  }
-
-  if (success) {
-    return (
-      <main>
-        {success.map((post, index) => (
-          <div key={index}>{post.title}</div>
-        ))}
-        <form action={createPost}>
-          <input
-            className="bg-black"
-            type="text"
-            name="title"
-            placeholder="Title"
-          />
-          <button type="submit">Submit</button>
-        </form>
-      </main>
-    );
-  }
+  return (
+    <main className="text-red-500">
+      <h1>Hello there</h1>
+      <Button>Click me!</Button>
+      <button onClick={signIn}>Sign In</button>
+      <button onClick={signUp}>Sign Up</button>
+    </main>
+  );
 }
