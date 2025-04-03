@@ -1,13 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { signIn, signUp } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
+import { signIn, signUp } from "@/server/actions/users";
+import { headers } from "next/headers";
+import SignOut from "./signout";
+import SignIn from "@/components/signin";
 
 export default async function Home() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <main className="text-red-500">
-      <h1>Hello there</h1>
-      <Button>Click me!</Button>
-      <button onClick={signIn}>Sign In</button>
-      <button onClick={signUp}>Sign Up</button>
+      <Button onClick={signIn}>Sign In</Button>
+      <Button onClick={signUp}>Sign Up</Button>
+      <SignOut />
+      <p>{!session ? "Not Authenticated" : session.user.name}</p>
+      <SignIn provider='github'/>
+      <SignIn provider='google'/>
+      
     </main>
   );
 }
