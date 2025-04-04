@@ -14,7 +14,7 @@ export default async function Home() {
     <main className="text-red-500">
       <Button onClick={signIn}>Sign In</Button>
       <Button onClick={signUp}>Sign Up</Button>
-      <SignOut />
+      {/* <SignOut /> */}
       <p>{!session ? "Not Authenticated" : session.user.name}</p>
       <SignIn provider='github'/>
       <SignIn provider='google'/>
