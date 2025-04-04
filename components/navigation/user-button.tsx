@@ -17,13 +17,11 @@ interface SessionProps {
 
 export default function UserButton({ user, session }: SessionProps) {
   return (
-    <>
-      <div>
-        UserButton {user?.email} {session?.userId}
-      </div>
-      <div>
+    <div>
+      <h1>
+        {user?.email} {session?.userId}
+      </h1>
         <SignOut />
-      </div>
-    </>
+    </div>
   );
 }

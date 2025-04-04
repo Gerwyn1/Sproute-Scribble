@@ -2,6 +2,9 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Logo from "./logo";
 import UserButton from "./user-button";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { LogIn } from "lucide-react";
 
 export default async function Nav() {
   const session = await auth.api.getSession({
@@ -9,18 +12,25 @@ export default async function Nav() {
   });
 
   return (
-    <header>
+    <header className="p-4">
       <nav>
-        <ul>
+        <ul className="flex justify-between">
           <li>
-            <a href="/home">
-              <Logo />
-            </a>
+            <Logo />
           </li>
           <li>
-            <a href="/home">
-              <UserButton user={session?.user} session={session?.session} />
-            </a>
+            {!session ? (
+              <Button asChild>
+                <Link className='flex gap-2' href="/auth/login" passHref>
+                  <LogIn size={16}/>
+                  <span>Login</span>
+                </Link>
+              </Button>
+            ) : (
+              <li>
+                <UserButton user={session?.user} session={session?.session} />
+              </li>
+            )}
           </li>
         </ul>
       </nav>
