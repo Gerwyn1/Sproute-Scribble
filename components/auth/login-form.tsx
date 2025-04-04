@@ -11,7 +11,6 @@ export default function LoginForm() {
       showSocials
     >
       <div>
-        <h1>hey</h1>
       </div>
     </AuthCard>
   );
