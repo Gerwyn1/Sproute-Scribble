@@ -16,13 +16,15 @@ export default async function Nav() {
       <nav>
         <ul className="flex justify-between">
           <li>
-            <Logo />
+            <Link href="/" passHref>
+              <Logo />
+            </Link>
           </li>
           <li>
             {!session ? (
               <Button asChild>
-                <Link className='flex gap-2' href="/auth/login" passHref>
-                  <LogIn size={16}/>
+                <Link className="flex gap-2" href="/auth/login" passHref>
+                  <LogIn size={16} />
                   <span>Login</span>
                 </Link>
               </Button>
