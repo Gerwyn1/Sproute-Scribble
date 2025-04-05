@@ -1,10 +1,10 @@
 import {
   pgTable,
   text,
-  integer,
   timestamp,
   boolean,
   pgEnum,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 
 export const RoleEnum = pgEnum("roles", ["user", "admin"]);
@@ -52,13 +52,16 @@ export const account = pgTable("account", {
   updatedAt: timestamp("updated_at").notNull(),
 });
 
-export const verification = pgTable("verification", {
-  id: text("id").primaryKey(),
-  identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at"),
-  updatedAt: timestamp("updated_at"),
-});
+export const emailTokens = pgTable(
+  "email_tokens",
+  {
+    id: text("id").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+    createdAt: timestamp("created_at"),
+    updatedAt: timestamp("updated_at"),
+  },
+  (vt) => [primaryKey({ columns: [vt.id, vt.token] })]
+);
 
-export const schema = { user, session, account, verification };
+export const schema = { user, session, account, emailTokens };
