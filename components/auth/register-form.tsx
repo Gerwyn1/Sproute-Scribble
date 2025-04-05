@@ -19,6 +19,7 @@ import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { RegisterSchema } from "@/types/register-schema";
+import { emailRegister } from "@/server/actions/email-register";
 
 export default function RegisterForm() {
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -32,15 +33,16 @@ export default function RegisterForm() {
 
   const [error, setError] = useState("");
 
-  // const { execute, status, result } = useAction(first, {
-  //   onSuccess(data) {
-  //     console.log(data);
-  //   },
-  // });
+  const { execute, status, result } = useAction(emailRegister, {
+    onSuccess(data) {
+      console.log(data?.data?.success);
+    },
+  });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    // execute(values);
+    execute(values);
   };
+
   return (
     <AuthCard
       cardTitle="Create an account"
@@ -59,11 +61,7 @@ export default function RegisterForm() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="bob"
-                        type="text"
-                      />
+                      <Input {...field} placeholder="bob" type="text" />
                     </FormControl>
                     <FormDescription />
                     <FormMessage />
