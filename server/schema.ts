@@ -6,19 +6,23 @@ import {
   pgEnum,
   primaryKey,
 } from "drizzle-orm/pg-core";
+import { createId } from "@paralleldrive/cuid2";
 
 export const RoleEnum = pgEnum("roles", ["user", "admin"]);
 
 export const user = pgTable("user", {
-  id: text("id").primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").notNull(),
+  emailVerified: boolean("email_verified"),
   image: text("image"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
   twoFactorEnabled: boolean("twoFactorEnabled").default(false),
   role: RoleEnum("roles").default("user"),
+  password: text("password"),
 });
 
 export const session = pgTable("session", {
@@ -55,9 +59,12 @@ export const account = pgTable("account", {
 export const emailTokens = pgTable(
   "email_tokens",
   {
-    id: text("id").notNull(),
+    id: text("id")
+      .notNull()
+      .$defaultFn(() => createId()),
     token: text("token").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
+    email: text("email").notNull(),
     createdAt: timestamp("created_at"),
     updatedAt: timestamp("updated_at"),
   },

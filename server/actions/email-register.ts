@@ -5,6 +5,7 @@ import { db } from "@/server";
 import { eq } from "drizzle-orm";
 import { RegisterSchema } from "@/types/register-schema";
 import bcrypt from "bcryptjs";
+import { generateEmailVerificationToken } from "./tokens";
 
 const action = createSafeActionClient();
 
@@ -12,41 +13,37 @@ export const emailRegister = action
   .schema(RegisterSchema)
   .action(async ({ parsedInput }) => {
     const { name, email, password } = parsedInput;
+    // hash password
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
-    console.log(password, " | ", hashedPassword);
-    // check if user is in db
+
+    // check if user's email is in db, if not, register user and send verification email
     const existingUser = await db.query.user.findFirst({
       where: eq(user.email, email),
     });
-
-    // check if user's email is in db, if not, register user and send verification email
     if (existingUser) {
-      // if (!existingUser?.emailVerified) {
-      //   const verificationToken =
-      // }
+      if (!existingUser?.emailVerified) {
+        const verificationToken = await generateEmailVerificationToken(email);
+        // await sendVerificationEmail();
+
+        return { success: "Email Confirmation resent" };
+      }
       return { error: "Email already in use" };
     }
 
-    return { success: "yay!" };
+    // Logic for when user is not registered
 
-    // if (existingUser?.email === email) {
-    //   return { error: "Email already used" };
-    // }
+    await db.insert(user).values({
+      name,
+      email,
+      password: hashedPassword,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
-    // // store user in db
-    // const newUser = await db.query.user.create({
-    //   data: {
-    //     name,
-    //     email,
-    //     hashedPassword
-    //   }
-    // })
+    const verificationToken = await generateEmailVerificationToken(email);
 
-    // if (!existingUser?.emailVerified) {
-    //   return { error: "Email not verified" };
-    // }
+    // await sendVerificationEmail();
 
-    // console.log(email, password, code);
-    // return { success: email };
+    return { success: "Confirmation Email Sent!" };
   });
