@@ -16,7 +16,11 @@ export const user = pgTable("user", {
     .$defaultFn(() => createId()),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified"),
+  verify: timestamp("verify", {
+    mode: "date",
+    withTimezone: true,
+  }),
+  emailVerified: boolean("email_verified").notNull(),
   image: text("image"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
@@ -56,6 +60,15 @@ export const account = pgTable("account", {
   updatedAt: timestamp("updated_at").notNull(),
 });
 
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at"),
+  updatedAt: timestamp("updated_at"),
+});
+
 export const emailTokens = pgTable(
   "email_tokens",
   {
@@ -71,4 +84,4 @@ export const emailTokens = pgTable(
   (vt) => [primaryKey({ columns: [vt.id, vt.token] })]
 );
 
-export const schema = { user, session, account, emailTokens };
+export const schema = { user, session, account, emailTokens, verification };

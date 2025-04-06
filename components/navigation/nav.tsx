@@ -20,20 +20,18 @@ export default async function Nav() {
               <Logo />
             </Link>
           </li>
-          <li>
-            {!session ? (
-              <Button asChild>
-                <Link className="flex gap-2" href="/auth/login" passHref>
-                  <LogIn size={16} />
-                  <span>Login</span>
-                </Link>
-              </Button>
-            ) : (
-              <li>
-                <UserButton user={session?.user} session={session?.session} />
-              </li>
-            )}
-          </li>
+          {!session ? (
+            <Button asChild>
+              <Link className="flex gap-2" href="/auth/login" passHref>
+                <LogIn size={16} />
+                <span>Login</span>
+              </Link>
+            </Button>
+          ) : (
+            <li>
+              <UserButton user={session?.user} session={session?.session} />
+            </li>
+          )}
         </ul>
       </nav>
     </header>

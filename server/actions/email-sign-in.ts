@@ -20,7 +20,7 @@ export const emailSignIn = action
       return { error: "Email not found" };
     }
 
-    if (!existingUser?.emailVerified) {
+    if (!existingUser?.verify) {
       return { error: "Email not verified" };
     }
 

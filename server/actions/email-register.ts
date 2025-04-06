@@ -23,7 +23,7 @@ export const emailRegister = action
       where: eq(user.email, email),
     });
     if (existingUser) {
-      if (!existingUser?.emailVerified) {
+      if (!existingUser?.verify) {
         const verificationToken = await generateEmailVerificationToken(email);
         await sendVerificationEmail(
           verificationToken[0].email,
@@ -42,6 +42,7 @@ export const emailRegister = action
       password: hashedPassword,
       createdAt: new Date(),
       updatedAt: new Date(),
+      emailVerified: false,
     });
 
     const verificationToken = await generateEmailVerificationToken(email);
