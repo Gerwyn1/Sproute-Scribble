@@ -36,7 +36,7 @@ export default function RegisterForm() {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
-  const { execute, status, result } = useAction(emailRegister, {
+  const { execute, status } = useAction(emailRegister, {
     onSuccess(data) {
       if (data?.data?.error) setError(data?.data?.error);
       if (data?.data?.success) setSuccess(data?.data?.success);
