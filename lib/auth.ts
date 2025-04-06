@@ -3,6 +3,8 @@ import { schema } from "@/server/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { sendVerificationEmail2 } from "@/server/actions/email2";
+import { openAPI } from "better-auth/plugins"; // api/auth/reference
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -11,8 +13,17 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
   },
-  plugins: [nextCookies()],
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, token }) => {
+      const verificationUrl = `${process.env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${process.env.EMAIL_VERIFICATION_CALLBACK_URL}`;
+      sendVerificationEmail2(user.email, verificationUrl);
+    },
+  },
+  plugins: [nextCookies(), openAPI()],
 
   socialProviders: {
     github: {

@@ -1,10 +1,10 @@
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Logo from "./logo";
 import UserButton from "./user-button";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { LogIn } from "lucide-react";
+import { auth } from "@/lib/auth";
 
 export default async function Nav() {
   const session = await auth.api.getSession({
