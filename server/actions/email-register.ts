@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { RegisterSchema } from "@/types/register-schema";
 import bcrypt from "bcryptjs";
 import { generateEmailVerificationToken } from "./tokens";
+import { sendVerificationEmail } from "./email";
 
 const action = createSafeActionClient();
 
@@ -24,7 +25,10 @@ export const emailRegister = action
     if (existingUser) {
       if (!existingUser?.emailVerified) {
         const verificationToken = await generateEmailVerificationToken(email);
-        // await sendVerificationEmail();
+        await sendVerificationEmail(
+          verificationToken[0].email,
+          verificationToken[0].token
+        );
 
         return { success: "Email Confirmation resent" };
       }
@@ -32,7 +36,6 @@ export const emailRegister = action
     }
 
     // Logic for when user is not registered
-
     await db.insert(user).values({
       name,
       email,
@@ -42,8 +45,10 @@ export const emailRegister = action
     });
 
     const verificationToken = await generateEmailVerificationToken(email);
-
-    // await sendVerificationEmail();
+    await sendVerificationEmail(
+      verificationToken[0].email,
+      verificationToken[0].token
+    );
 
     return { success: "Confirmation Email Sent!" };
   });

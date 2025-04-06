@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { RegisterSchema } from "@/types/register-schema";
 import { emailRegister } from "@/server/actions/email-register";
+import FormSuccess from "./form-success";
+import FormError from "./form-error";
 
 export default function RegisterForm() {
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -31,11 +33,13 @@ export default function RegisterForm() {
     },
   });
 
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
   const { execute, status, result } = useAction(emailRegister, {
     onSuccess(data) {
-      console.log(data?.data?.success);
+      if (data?.data?.error) setError(data?.data?.error);
+      if (data?.data?.success) setSuccess(data?.data?.success);
     },
   });
 
@@ -106,6 +110,8 @@ export default function RegisterForm() {
                   </FormItem>
                 )}
               />
+              <FormSuccess message={success} />
+              <FormError message={error} />
               <Button size="sm" variant="link" asChild>
                 <Link href="/auth/reset">Forget your password</Link>
               </Button>
