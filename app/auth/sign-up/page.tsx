@@ -45,7 +45,7 @@ export default function SignUp() {
           setPending(true);
         },
         onSuccess: () => {
-          toast("Account created", {
+          toast.success("Account created", {
             description:
               "Your account has been created. Check your email for a verification link.",
             action: {
@@ -57,7 +57,7 @@ export default function SignUp() {
         onError: (ctx) => {
           console.log("error", ctx);
 
-          toast("Something went wrong", {
+          toast.error("Something went wrong", {
             description: ctx.error.message ?? "Something went wrong",
             action: {
               label: "Undo",
@@ -114,7 +114,7 @@ export default function SignUp() {
             </form>
           </Form>
           <div className="mt-4 text-center text-sm">
-            <Link href="/sign-in" className="text-primary hover:underline">
+            <Link href="/auth/sign-in" className="text-primary hover:underline">
               Already have an account? Sign in
             </Link>
           </div>

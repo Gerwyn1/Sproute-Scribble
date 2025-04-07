@@ -3,7 +3,10 @@ import { schema } from "@/server/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { sendVerificationEmail2 } from "@/server/actions/email2";
+import {
+  sendVerificationEmail2,
+  sendForgotPasswordEmail,
+} from "@/server/actions/email2";
 import { openAPI } from "better-auth/plugins"; // api/auth/reference
 
 export const auth = betterAuth({
@@ -14,6 +17,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      sendForgotPasswordEmail(user.email, url);
+    },
   },
   emailVerification: {
     sendOnSignUp: true,
@@ -38,3 +44,5 @@ export const auth = betterAuth({
     },
   },
 });
+
+export type Session = typeof auth.$Infer.Session;

@@ -33,12 +33,12 @@ export const emailSignIn = action
         );
         return { success: "Confirmation Email Sent!" };
       }
-      console.log("test log222222222222222");
+    
 
       // 2FA TODO
 
       await signIn(email, password);
- console.log("test log333333333333333");
+
       return { success: email };
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
