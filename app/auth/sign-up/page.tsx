@@ -89,18 +89,24 @@ export default function SignUp() {
                   render={({ field: fieldProps }) => (
                     <FormItem>
                       <FormLabel>
-                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                        {field === "confirmPassword"
+                          ? "Confirm Password"
+                          : field.charAt(0).toUpperCase() + field.slice(1)}
                       </FormLabel>
                       <FormControl>
                         <Input
                           type={
-                            field.includes("password")
+                            field.includes("password") || field.includes("confirmPassword")
                               ? "password"
                               : field === "email"
                                 ? "email"
                                 : "text"
                           }
-                          placeholder={`Enter your ${field}`}
+                          placeholder={
+                            field === "confirmPassword"
+                              ? `Confirm your password`
+                              : `Enter your ${field}`
+                          }
                           {...fieldProps}
                           autoComplete="off"
                         />
