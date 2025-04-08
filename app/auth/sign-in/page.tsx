@@ -24,11 +24,13 @@ import { useRouter } from "next/navigation";
 import { ErrorContext } from "@better-fetch/fetch";
 import { FaGithub } from "react-icons/fa";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function SignIn() {
   const router = useRouter();
   const [pendingCredentials, setPendingCredentials] = useState(false);
   const [pendingGithub, setPendingGithub] = useState(false);
+  const [pendingGoogle, setPendingGoogle] = useState(false);
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -97,6 +99,33 @@ export default function SignIn() {
     setPendingGithub(false);
   };
 
+  const handleSignInWithGoogle = async () => {
+    await signIn.social(
+      {
+        provider: "google",
+      },
+      {
+        onRequest: () => {
+          setPendingGoogle(true);
+        },
+        onSuccess: async () => {
+          router.push("/");
+          router.refresh();
+        },
+        onError: (ctx: ErrorContext) => {
+          toast.error("Something went wrong", {
+            description: ctx.error.message ?? "Something went wrong",
+            action: {
+              label: "Undo",
+              onClick: () => console.log("Undo"),
+            },
+          });
+        },
+      }
+    );
+    setPendingGoogle(false);
+  };
+
   return (
     <div className="grow flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -136,6 +165,14 @@ export default function SignIn() {
                   )}
                 />
               ))}
+              <div className="mt-4 text-left text-sm">
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <LoadingButton pending={pendingCredentials}>
                 Sign in
               </LoadingButton>
@@ -143,21 +180,29 @@ export default function SignIn() {
           </Form>
           <div className="mt-4">
             <LoadingButton
+              pending={pendingGoogle}
+              onClick={handleSignInWithGoogle}
+              provider
+            >
+              <FaGithub className="w-4 h-4 mr-2" />
+              Continue with Google
+            </LoadingButton>
+          </div>
+          <div className="mt-4">
+            <LoadingButton
               pending={pendingGithub}
               onClick={handleSignInWithGithub}
+              provider
             >
               <FaGithub className="w-4 h-4 mr-2" />
               Continue with GitHub
             </LoadingButton>
           </div>
-          <div className="mt-4 text-center text-sm">
-            <Link
-              href="/auth/forgot-password"
-              className="text-primary hover:underline"
-            >
-              Forgot password?
+          <Button className="font-medium w-full mt-4" asChild variant="link">
+            <Link aria-label={"Create an account"} href={"/auth/sign-up"}>
+              Create an account
             </Link>
-          </div>
+          </Button>
         </CardContent>
       </Card>
     </div>

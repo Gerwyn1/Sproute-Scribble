@@ -6,14 +6,42 @@ import { nextCookies } from "better-auth/next-js";
 import {
   sendVerificationEmail2,
   sendForgotPasswordEmail,
+  sendChangeVerificationEmail,
 } from "@/server/actions/email2";
 import { openAPI } from "better-auth/plugins"; // api/auth/reference
+import { admin } from "better-auth/plugins";
+
+
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
   }),
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    // BUG: Prob a bug with updateAge method. It throws an error - Argument `where` of type SessionWhereUniqueInput needs at least one of `id` arguments.
+    // As a workaround, set updateAge to a large value for now.
+    updateAge: 60 * 60 * 24 * 7, // 7 days (every 7 days the session expiration is updated)
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // Cache duration in seconds
+    },
+  },
+  user: {
+    additionalFields: {
+      premium: {
+        type: "boolean",
+        required: false,
+      },
+    },
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async ({ newEmail, url }) => {
+        sendChangeVerificationEmail(newEmail, url);
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -29,7 +57,7 @@ export const auth = betterAuth({
       sendVerificationEmail2(user.email, verificationUrl);
     },
   },
-  plugins: [nextCookies(), openAPI()],
+  plugins: [nextCookies(), openAPI(), admin()],
 
   socialProviders: {
     github: {

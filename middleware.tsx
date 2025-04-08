@@ -23,16 +23,16 @@ export default async function authMiddleware(request: NextRequest) {
     },
   );
 
-  if (!session) {
-    if (isAuthRoute || isPasswordRoute) {
-      return NextResponse.next();
-    }
-    return NextResponse.redirect(new URL("/auth/sign-in", request.url));
-  }
+  // if (!session) {
+  //   if (isAuthRoute || isPasswordRoute) {
+  //     return NextResponse.next();
+  //   }
+  //   return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+  // }
 
-  if (isAuthRoute || isPasswordRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // if (isAuthRoute || isPasswordRoute) {
+  //   return NextResponse.redirect(new URL("/", request.url));
+  // }
 
   // if (isAdminRoute && session.user.role !== "admin") {
   //   return NextResponse.redirect(new URL("/", request.url));

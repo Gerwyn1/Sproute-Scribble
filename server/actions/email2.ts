@@ -20,7 +20,7 @@ export const sendVerificationEmail2 = async (
     from: process.env.EMAIL_FROM as string,
     to: email,
     subject: "Sprout and Scribble - Confirmation Email",
-    html: `<p>Click to <a href='${verificationUrl}'>${verificationUrl === "/reset-password" ? "reset your password" : "Confirm your email"}</a></p>`,
+    html: `<p>Click to <a href='${verificationUrl}'>Confirm your email</a></p>`,
   });
   if (error) return console.log(error);
   if (data) return data;
@@ -35,6 +35,20 @@ export const sendForgotPasswordEmail = async (
     to: email,
     subject: "Sprout and Scribble - Forgot Password Email",
     html: `<p>Click to <a href='${verificationUrl}'>Reset your password</a></p>`,
+  });
+  if (error) return console.log(error);
+  if (data) return data;
+};
+
+export const sendChangeVerificationEmail = async (
+  email: string,
+  verificationUrl: string
+) => {
+  const { data, error } = await resend.emails.send({
+    from: process.env.EMAIL_FROM as string,
+    to: email,
+    subject: "Sprout and Scribble - Change your verification email",
+    html: `<p>Click to <a href='${verificationUrl}'>Change your email</a></p>`,
   });
   if (error) return console.log(error);
   if (data) return data;

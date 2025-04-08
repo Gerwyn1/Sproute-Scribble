@@ -27,6 +27,10 @@ export const user = pgTable("user", {
   twoFactorEnabled: boolean("twoFactorEnabled").default(false),
   role: RoleEnum("roles").default("user"),
   password: text("password"),
+  premium: boolean("premium").default(false),
+  banned: boolean("banned").default(false),
+  banReason: text("banReason"),
+  banExpires: timestamp("banExpires"),
 });
 
 export const session = pgTable("session", {
